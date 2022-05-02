@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_agre_auto"
+        android:icon="@drawable/ic_baseline_add_24"
+        android:title="Agregar auto" />
+
+    <item
+        android:id="@+id/nav_agre_arre"
+        android:icon="@drawable/ic_baseline_add_circle_24"
+        android:title="Agregar arrendamiento" />
+
+    <item
+        android:id="@+id/nav_mod_auto"
+        android:icon="@drawable/ic_baseline_edit_24"
+        android:title="Consulta auto" />
+
+    <item
+        android:id="@+id/nav_mod_arre"
+        android:icon="@drawable/ic_baseline_edit_attributes_24"
+        android:title="Consulta arrendamiento" />
+
+</menu>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_agre_auto">
+
+    <fragment
+        android:id="@+id/nav_agre_auto"
+        android:name="com.example.automoviles_18401179_edssonperez.ui.home.HomeFragment"
+        android:label="Agregar Autos"
+        tools:layout="@layout/fragment_agre_auto" />
+
+    <fragment
+        android:id="@+id/nav_agre_arre"
+        android:name="com.example.automoviles_18401179_edssonperez.ui.dashboard.DashboardFragment"
+        android:label="Agregar arrendamiento"
+        tools:layout="@layout/fragment_agre_arre" />
+
+    <fragment
+        android:id="@+id/nav_mod_auto"
+        android:name="com.example.automoviles_18401179_edssonperez.ui.notifications.NotificationsFragment"
+        android:label="Consulta Auto"
+        tools:layout="@layout/fragment_mod_auto" />
+
+    <fragment
+        android:id="@+id/nav_mod_arre"
+        android:name="com.example.automoviles_18401179_edssonperez.ui.ModArreFragment"
+        android:label="Consulta Arrendamiento"
+        tools:layout="@layout/fragment_mod_arre_arre" />
+
+
+</navigation>
