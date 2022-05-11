@@ -14,12 +14,14 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.automoviles_18401179_edssonperez.Auto
 import com.example.automoviles_18401179_edssonperez.databinding.FragmentAgreAutoBinding
 import com.example.automoviles_18401179_edssonperez.ui.ActualizarFragment
+import com.google.firebase.firestore.FirebaseFirestore
 
 class HomeFragment : Fragment() {
-
+    val bd = FirebaseFirestore.getInstance()
     private var _binding: FragmentAgreAutoBinding? = null
     private val binding get() = _binding!!
-    var idA= arrayListOf<Int>()
+    var idA = arrayListOf<String>()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -30,75 +32,31 @@ class HomeFragment : Fragment() {
 
         _binding = FragmentAgreAutoBinding.inflate(inflater, container, false)
         val root: View = binding.root
+ 
         binding.btnAgreAuto.setOnClickListener {
-
-            if(binding.txtModelo.text.toString() == "" ||binding.txtMarca.text.toString()==("")||binding.txtKm.text.toString()==("")){
-                Toast.makeText(requireContext(),"Campos vacios", Toast.LENGTH_LONG).show()
+            if (binding.txtModelo.text.toString() == "" || binding.txtMarca.text.toString() == ("") || binding.txtKm.text.toString() == ("")) {
+                Toast.makeText(requireContext(), "Campos vacios", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
             val auto = Auto(requireContext())
-            auto.modelo=binding.txtModelo.text.toString()
-            auto.marca=binding.txtMarca.text.toString()
-            auto.kilometraje=binding.txtKm.text.toString().toInt()
+            auto.modelo = binding.txtModelo.text.toString()
+            auto.marca = binding.txtMarca.text.toString()
+            auto.kilometraje = binding.txtKm.text.toString().toInt()
 
-            val resultado = auto.insertar()
-            if(resultado){
-                Toast.makeText(requireContext(),"Se inserto con exito",Toast.LENGTH_LONG).show()
-                binding.txtModelo.setText("")
-                binding.txtMarca.setText("")
-                binding.txtKm.setText("")
-            }else{
-                AlertDialog.Builder(requireContext())
-                    .setTitle("Error")
-                    .setMessage("No se pudo insertar")
-                    .show()
-            }
-            mostrarList()
+            auto.insertar()
+            binding.txtModelo.setText("")
+            binding.txtMarca.setText("")
+            binding.txtKm.setText("")
+
         }
-        mostrarList()
+
         return root
     }
 
-    fun mostrarList(){
-        var listaAutos = Auto(requireContext()).mostrarTodos()
-        var coches = ArrayList<String>()
-        (0..listaAutos.size-1).forEach{
-            val au = listaAutos.get(it)
-            coches.add("Auto ${au.idauto}, Modelo:${au.modelo}, " +
-                    "Marca:${au.marca}, Km:${au.kilometraje}")
-            idA.add(au.idauto)
-        }
-        binding.listaAutos.adapter = ArrayAdapter<String>(requireContext(),
-            android.R.layout.simple_list_item_1,coches)
-        binding.listaAutos.setOnItemClickListener { adapterView, view, i,l  ->
-            val c = idA.get(i)
-            val coche = Auto(requireContext()).mostrar(c)
-            AlertDialog.Builder(requireContext())
-                .setTitle("Seleccionado")
-                .setMessage("Modelo: ${coche.modelo}\nMarca: ${coche.marca} \nkilometraje: ${coche.kilometraje}")
-                .setNegativeButton("Eliminar"){d,i->
-                    coche.eliminar()
-                    mostrarList()
-                }
-                .setPositiveButton("Actualizar"){d,i->
-                    val ventana = Intent(requireContext(), ActualizarFragment::class.java)
-                    ventana.putExtra("idauto",coche.idauto.toString())
-                    ventana.putExtra("modelo",coche.modelo)
-                    ventana.putExtra("marca",coche.marca)
-                    ventana.putExtra("kilometraje",coche.kilometraje.toString())
-                    startActivity(ventana)
-                }
-                .setNeutralButton("Cerrar"){d,i->}
-                .show()
-        }
-    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
-    override fun onResume() {
-        super.onResume()
-        mostrarList()
-    }
+
 }

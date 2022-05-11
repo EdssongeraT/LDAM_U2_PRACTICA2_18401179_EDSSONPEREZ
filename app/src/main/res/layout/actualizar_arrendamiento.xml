@@ -68,7 +68,12 @@
         android:id="@+id/txt_Fecha"
         android:inputType="date"
         />
-
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_sel"
+        android:text="Seleccionar auto"
+        />
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

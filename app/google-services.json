@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "48443542729",
+    "project_id": "automoviles18401179",
+    "storage_bucket": "automoviles18401179.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:48443542729:android:040ac8887eb1a4fee31118",
+        "android_client_info": {
+          "package_name": "com.example.automoviles_18401179_edssonperez"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "48443542729-9dv339c2abkcp5qr3tk12g5r8ttmstb9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDdUkocePaMdQdzsthKI-uvbm5PIr55IQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "48443542729-9dv339c2abkcp5qr3tk12g5r8ttmstb9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

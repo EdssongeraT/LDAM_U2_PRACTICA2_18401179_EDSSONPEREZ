@@ -46,9 +46,34 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Consultar el arrendamiento antes de cualquier transaccion"
+        android:text="Modelo"
         />
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/txt_Modelo_con"
+        android:hint="Modelo del coche(Tsuru,Xtrail,etc)"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Marca"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/txt_Marca_con"
+        android:hint="Marca(Nissan, BMW, Chevrolet)"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Seleccione para realizar cualquier transaccion"
+        />
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

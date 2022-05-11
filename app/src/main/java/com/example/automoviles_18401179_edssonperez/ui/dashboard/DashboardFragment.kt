@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -17,15 +18,18 @@ import com.example.automoviles_18401179_edssonperez.Auto
 import com.example.automoviles_18401179_edssonperez.databinding.FragmentAgreArreBinding
 import com.example.automoviles_18401179_edssonperez.ui.ActualizarArrendamiento
 import com.example.automoviles_18401179_edssonperez.ui.ActualizarFragment
+import com.google.firebase.firestore.FirebaseFirestore
 
 class DashboardFragment : Fragment() {
-
+    val bd = FirebaseFirestore.getInstance()
     private var _binding: FragmentAgreArreBinding? = null
     private val binding get() = _binding!!
     var cursor: Cursor? = null
-    var id_auto =0
+    var id_auto =""
     var mod_auto =""
-    var idA= arrayListOf<Int>()
+    var mar_auto = ""
+    var km_auto = 0
+    var idA= arrayListOf<String>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,44 +41,82 @@ class DashboardFragment : Fragment() {
 
         _binding = FragmentAgreArreBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        mostrarList()
+        binding.txtModeloArre.isEnabled =false
+        binding.btnSel.setOnClickListener {
+            idA.clear()
+
+            bd.collection("auto")
+                .addSnapshotListener { query, error ->
+                    if (error != null) {
+                        AlertDialog.Builder(requireContext())
+                            .setMessage(error.message)
+                            .show()
+                        return@addSnapshotListener
+                    }
+
+                    var arreglo = ArrayList<Auto>()
+                    arreglo.clear()
+                    for (documento in query!!) {
+                        var auto = Auto(requireContext())
+                        auto.idauto = documento.id
+                        auto.modelo = documento.getString("modelo").toString()
+                        auto.marca = documento.getString("marca").toString()
+                        auto.kilometraje = documento.getLong("kilometraje").toString().toInt()
+
+                        arreglo.add(auto)
+                    }
+
+                    val coches = ArrayList<String>()
+                    //muestra en listview
+                    (0..arreglo.size - 1).forEach {
+                        val au = arreglo.get(it)
+                        coches.add(
+                            "Modelo:${au.modelo}, " +
+                                    "Marca:${au.marca}, Km:${au.kilometraje}"
+                        )
+                        print(au.modelo)
+                        idA.add(au.idauto)
+                    }
+                    AlertDialog.Builder(requireContext()).
+                    setItems(coches.toTypedArray()){dialog, i ->
+                        id_auto=arreglo.get(i).idauto
+                        mod_auto=arreglo.get(i).modelo
+                        mar_auto=arreglo.get(i).marca
+                        km_auto=arreglo.get(i).kilometraje.toString().toInt()
+
+                        binding.txtModeloArre.setText(id_auto)
+                    }
+                            .setNeutralButton("Cerrar") { d, i -> }
+                        .show()
+                }
+
+
+        }
         binding.btnAgreArre.setOnClickListener {
         if(binding.txtNombre.text.toString() == ""||binding.txtDomicilio.text.toString()== ""||binding.txtLic.text.toString() == ""
             ||binding.txtModeloArre.text.toString() == ""||binding.txtFecha.text.toString() == ""){
             Toast.makeText(requireContext(),"Campos vacios", Toast.LENGTH_LONG).show()
             return@setOnClickListener
         }
+
         val arre= Arrendamiento(requireContext())
             arre.nombre= binding.txtNombre.text.toString()
             arre.domicilio= binding.txtDomicilio.text.toString()
             arre.licencia = binding.txtLic.text.toString()
-            arre.idAuto = binding.txtModeloArre.text.toString().toInt()
+            arre.idAuto = binding.txtModeloArre.text.toString()
             arre.fecha = binding.txtFecha.text.toString()
-            if (arre.llave(arre.idAuto)) {
+            arre.modelo = mod_auto
+            arre.marca = mar_auto
+            arre.kilometraje = km_auto.toInt()
+        val auto = Auto(requireContext())
 
-
-        val resultado = arre.insertar()
-        if(resultado){
-            Toast.makeText(requireContext(),"Se inserto con exito", Toast.LENGTH_LONG).show()
             binding.txtNombre.setText("")
             binding.txtDomicilio.setText("")
             binding.txtLic.setText("")
             binding.txtModeloArre.setText("")
             binding.txtFecha.setText("")
-        }else{
-            AlertDialog.Builder(requireContext())
-                .setTitle("Error")
-                .setMessage("No se pudo insertar")
-                .show()
-        }
 
-            }else {
-                AlertDialog.Builder(requireContext())
-                    .setTitle("Error")
-                    .setMessage("No existe auto")
-                    .show()
-            }
-            mostrarList()
+            arre.insertar()
     }
 
         return root
@@ -87,46 +129,8 @@ class DashboardFragment : Fragment() {
 
 
 
-    fun mostrarList(){
-        var listaArre = Arrendamiento(requireContext()).mostrarTodos()
-        var arres = ArrayList<String>()
-        (0..listaArre.size-1).forEach{
-            val ar = listaArre.get(it)
-            arres.add("Arrendamiento ${ar.idarre}, " +
-                    "Nombre:${ar.nombre}, Domicilio:${ar.domicilio}, Licencia:${ar.licencia}"
-                    +", idAuto:${ar.idAuto}, Fecha:${ar.fecha}")
-            idA.add(ar.idarre)
-        }
-        binding.listaAutos.adapter = ArrayAdapter<String>(requireContext(),
-            R.layout.simple_list_item_1,arres)
-        binding.listaAutos.setOnItemClickListener { adapterView, view, i,l  ->
-            val c = idA.get(i)
-            val arren = Arrendamiento(requireContext()).mostrar(c)
-            AlertDialog.Builder(requireContext())
-                .setTitle("Seleccionado")
-                .setMessage("Nombre: ${arren.nombre}\nDomicilio: ${arren.domicilio} \nLicencia: ${arren.licencia}\n" +
-                        "coche: ${arren.idAuto}\n" +
-                        "Fecha: ${arren.fecha}")
-                .setNegativeButton("Eliminar"){d,i->
-                    arren.eliminar()
-                    mostrarList()
-                }
-                .setPositiveButton("Actualizar"){d,i->
-                    val ventana = Intent(requireContext(), ActualizarArrendamiento::class.java)
-                    ventana.putExtra("idarre",arren.idarre.toString())
-                    ventana.putExtra("nombre",arren.nombre)
-                    ventana.putExtra("domicilio",arren.domicilio)
-                    ventana.putExtra("licencia",arren.licencia)
-                    ventana.putExtra("idauto",arren.idAuto)
-                    ventana.putExtra("fecha",arren.fecha)
-                    startActivity(ventana)
-                }
-                .setNeutralButton("Cerrar"){d,i->}
-                .show()
-        }
-    }
     override fun onResume() {
         super.onResume()
-        mostrarList()
+
     }
 }
